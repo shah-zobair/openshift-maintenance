@@ -10,8 +10,8 @@
     insertafter: "kubeletArguments"
     block: |2
         kube-reserved:
-          - cpu=200m,memory=1600Mi
+          - cpu=250m,memory=1600Mi
         system-reserved:
-          - cpu=200m,memory=1600Mi
+          - cpu=250m,memory=1600Mi
   notify:
     - restart atomic-openshift-node
