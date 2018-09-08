@@ -2,6 +2,19 @@
 # tasks file for roles/kube-reserve-new
 
 #########################
+
+- name: Remove any existing reserved variables
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: 'reserved'
+
+- name: Remove any existing cpu variables
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: '- cpu'
+
 - name: Add kube-reserved and system-reserved in node-config.yaml
   blockinfile:
     dest: /etc/origin/node/node-config.yaml
