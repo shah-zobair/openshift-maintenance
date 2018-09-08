@@ -1,0 +1,6 @@
+# file: role/kube-system-reserve/handlers/main.yml
+
+- name: restart atomic-openshift-node
+  service:
+    name: atomic-openshift-node
+    state: restarted

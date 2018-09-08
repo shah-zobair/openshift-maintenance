@@ -1,0 +1,6 @@
+---
+
+- name: Update all node for kube reserve and system reserve variables
+  hosts: nodes
+  roles:
+     - kube-system-reserve

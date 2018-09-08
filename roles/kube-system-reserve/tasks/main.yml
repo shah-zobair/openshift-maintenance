@@ -1,0 +1,17 @@
+---
+# tasks file for roles/kube-reserve-new
+
+#########################
+- name: Add kube-reserved and system-reserved in node-config.yaml
+  blockinfile:
+    dest: /etc/origin/node/node-config.yaml
+    create: no
+    backup: yes
+    insertafter: "kubeletArguments"
+    block: |2
+        kube-reserved:
+          - cpu=200m,memory=1600Mi
+        system-reserved:
+          - cpu=200m,memory=1600Mi
+  notify:
+    - restart atomic-openshift-node
