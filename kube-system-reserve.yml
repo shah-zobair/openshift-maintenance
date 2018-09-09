@@ -1,6 +1,21 @@
 ---
 
-- name: Update all node for kube reserve and system reserve variables
-  hosts: nodes
-  roles:
-     - kube-system-reserve
+#- name: Update all node for kube reserve and system reserve variables
+#  hosts: nodes
+#  gather_facts: true
+#  roles:
+#     - kube-system-reserve
+#  when: ansible_virtualization_role == 'guest'
+
+- hosts: nodes
+  tasks:
+  - include_role:
+      name: kube-system-reserve-vm
+    when: "ansible_virtualization_role == 'guest'"
+
+- hosts: nodes
+  tasks:
+  - include_role:
+      name: kube-system-reserve-physical
+    when: "ansible_virtualization_role != 'guest'"
+

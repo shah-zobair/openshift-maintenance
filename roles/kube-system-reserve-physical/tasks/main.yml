@@ -1,0 +1,30 @@
+---
+# tasks file for roles/kube-reserve-physical
+
+#########################
+
+- name: Remove any existing reserved variables
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: 'reserved'
+
+- name: Remove any existing cpu variables
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: '- cpu'
+
+- name: Add kube-reserved and system-reserved in node-config.yaml
+  blockinfile:
+    dest: /etc/origin/node/node-config.yaml
+    create: no
+    backup: yes
+    insertafter: "kubeletArguments"
+    block: |2
+        kube-reserved:
+          - cpu=500m,memory=1600Mi
+        system-reserved:
+          - cpu=500m,memory=1600Mi
+  notify:
+    - restart atomic-openshift-node
