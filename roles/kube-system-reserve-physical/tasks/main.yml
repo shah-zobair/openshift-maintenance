@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/kube-reserve-physical
+# tasks file for roles/kube-reserve-new
 
 #########################
 
@@ -15,6 +15,18 @@
     state: absent
     regexp: '- cpu'
 
+- name: Remove any existing eviction-hard variable
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: 'eviction-hard'
+
+- name: Remove any existing memory variables
+  lineinfile:
+    path: /etc/origin/node/node-config.yaml
+    state: absent
+    regexp: '- memory'
+
 - name: Add kube-reserved and system-reserved in node-config.yaml
   blockinfile:
     dest: /etc/origin/node/node-config.yaml
@@ -26,5 +38,7 @@
           - cpu=500m,memory=1600Mi
         system-reserved:
           - cpu=500m,memory=1600Mi
+        eviction-hard: 
+          - memory.available<256Mi
   notify:
     - restart atomic-openshift-node
