@@ -32,6 +32,7 @@
     dest: /etc/origin/node/node-config.yaml
     create: no
     backup: yes
+    state: present
     insertafter: "kubeletArguments"
     block: |2
         kube-reserved:

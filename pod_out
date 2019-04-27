@@ -1,0 +1,18 @@
+Now using project "default" on server "https://console-internal36.example.com:8443".
+uid=1000000000 gid=0(root) groups=0(root),1000000000
+uid=1000000000 gid=0(root) groups=0(root),1000000000
+Now using project "kube-public" on server "https://console-internal36.example.com:8443".
+Now using project "kube-system" on server "https://console-internal36.example.com:8443".
+Now using project "logging" on server "https://console-internal36.example.com:8443".
+Now using project "management-infra" on server "https://console-internal36.example.com:8443".
+Now using project "openshift" on server "https://console-internal36.example.com:8443".
+Now using project "openshift-infra" on server "https://console-internal36.example.com:8443".
+Now using project "prometheus" on server "https://console-internal36.example.com:8443".
+uid=1000090000 gid=0(root) groups=0(root),1000090000
+uid=1000090000 gid=0(root) groups=0(root),1000090000
+uid=1000090000 gid=0(root) groups=0(root),1000090000
+uid=1000090000 gid=0(root) groups=0(root),1000090000
+uid=1000090000 gid=0(root) groups=0(root),1000090000
+Now using project "test2" on server "https://console-internal36.example.com:8443".
+uid=1000080000 gid=0(root) groups=0(root),1000080000
+uid=1000080000 gid=0(root) groups=0(root),1000080000
