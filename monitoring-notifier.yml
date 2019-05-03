@@ -1,9 +1,13 @@
 ---
 
 
-- hosts: masters
+- hosts: master
+  serial: 1
+  #become: true
+  gather_facts: true
   tasks:
   - name: Prepare monitoring-notifier.sh script
+    become: true
     blockinfile:
       path: /root/monitoring-notifier.sh
       create: yes
@@ -35,66 +39,39 @@
            LAST_COUNTER=`cat /root/monitoring-notifier-counter | awk '{ print $2 }'`
            COUNTER=`expr $LAST_COUNTER + 1`
            echo "$CURRENT_DATE $COUNTER" > /root/monitoring-notifier-counter
+           LAST_ERROR=`grep -i ERROR $LOG_FILE | tail -n1`
 
            if [[ $COUNTER -ge "0" && $COUNTER -le "1" ]]; then
-              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times (First counter)"
+              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times (First counter) \n Last Error is: $LAST_ERROR"
            elif [[ $COUNTER -ge "5" && $COUNTER -le "5" ]]; then
-              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times(Second counter)"
+              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times(Second counter) \n Last Error is: $LAST_ERROR"
            elif [[ $COUNTER -ge "10" && $COUNTER -le "10" ]]; then
-              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times(Third counter). No further notification will be generated for today"
+              echo "`date`: Error is observerd on `hostname` for $ERROR_COUNT consecutive times(Third counter). No further notification will be generated for today \n Last Error is: $LAST_ERROR"
            else
               exit 0
            fi
         fi
-
-- hosts: masters[0]
-  tasks:
+  
   - name: Check if there is any ERROR
     shell: /root/monitoring-notifier.sh
     failed_when: False
     changed_when: False
     register: output
-
-  - name: Send notifications if required 
+    ignore_error: true
+    become: true
+  
+  - name: e-mail Health check report from Anisble server
+    delegate_to: localhost
     mail:
-      subject: OpenShift master-01 is in critical state
+      host: "{{ smtpServer }}"
+      port: "{{ smtpServerPort }}"
+      from: "{{ mailSenderAddr }}"
+      to: "{{ mailRecipientAddrTest }}"
+      subject: "[URGENT]: {{ ocp_env }} OpenShift {{ansible_hostname}} is in critical state"
       body: "{{ output.stdout }}"
-      host:
-      port:
-      username:
-
-- hosts: masters[-2]
-  tasks:
-  - name: Check if there is any ERROR
-    shell: /root/monitoring-notifier.sh
-    failed_when: False
-    changed_when: False
-    register: output
-
-  - name: Send notifications if required
-    mail:
-      subject: OpenShift master-02 is in critical state
-      body: "{{ output.stdout }}"
-      host:
-      port:
-      username:
-
-- hosts: masters[-1]
-  tasks:
-  - name: Check if there is any ERROR
-    shell: /root/monitoring-notifier.sh
-    failed_when: False
-    changed_when: False
-    register: output
-
-  - name: Send notifications if required
-    mail:
-      subject: OpenShift master-03 is in critical state
-      body: "{{ output.stdout }}"
-      host:
-      port:
-      username:
-
+    when: output.stdout != ""
+    ignore_error: true
+ 
 
 
 
